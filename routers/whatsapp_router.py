@@ -69,7 +69,7 @@ async def negotiate_via_whatsapp(
     if os.getenv("ENABLE_WHATSAPP", "false").lower() != "true":
         raise HTTPException(
             status_code=503,
-            detail="WhatsApp automation is disabled on this deployment. Run locally with ENABLE_WHATSAPP=true."
+            detail="WhatsApp live automation available in local demo mode."
         )
 
     db = request.app.state.supabase
