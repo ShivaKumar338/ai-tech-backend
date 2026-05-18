@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import math
 import os
 import random
@@ -17,6 +18,8 @@ from pydantic import BaseModel, Field
 from supabase._async.client import AsyncClient, create_client as async_create_client
 
 from routers.whatsapp_router import router as whatsapp_router
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -45,6 +48,9 @@ app.include_router(whatsapp_router)
 _supabase: Optional[AsyncClient] = None
 _gemini_model: Optional[Any] = None
 
+# WhatsApp automation is only available when ENABLE_WHATSAPP=true (local/VPS only)
+ENABLE_WHATSAPP = os.getenv("ENABLE_WHATSAPP", "false").lower() == "true"
+
 
 @app.on_event("startup")
 async def startup():
@@ -52,14 +58,22 @@ async def startup():
     if is_configured(SUPABASE_URL) and is_configured(SUPABASE_KEY):
         _supabase = await async_create_client(SUPABASE_URL, SUPABASE_KEY)
         app.state.supabase = _supabase
-    from services.whatsapp_negotiator import get_whatsapp
-    asyncio.create_task(get_whatsapp().start())
+    if ENABLE_WHATSAPP:
+        try:
+            from services.whatsapp_negotiator import get_whatsapp
+            asyncio.create_task(get_whatsapp().start())
+        except ImportError:
+            logger.warning("Playwright not installed — WhatsApp automation disabled")
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    from services.whatsapp_negotiator import get_whatsapp
-    await get_whatsapp().stop()
+    if ENABLE_WHATSAPP:
+        try:
+            from services.whatsapp_negotiator import get_whatsapp
+            await get_whatsapp().stop()
+        except Exception:
+            pass
 
 
 NEGOTIATION_ROUNDS = 4

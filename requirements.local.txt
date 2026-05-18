@@ -1,0 +1,4 @@
+# Install this locally for WhatsApp automation (not needed on Railway)
+# pip install -r requirements.local.txt
+psutil==7.0.0
+playwright==1.54.0

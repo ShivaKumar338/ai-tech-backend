@@ -1,12 +1,28 @@
+# Python
 .env
 venv/
+.venv/
 __pycache__/
 *.pyc
+*.pyo
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 *.egg-info/
 dist/
 build/
+
+# WhatsApp browser sessions — never commit these
 whatsapp_session/
 whatsapp_session_2/
+
+# Frontend
+frontend/.env
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+
+

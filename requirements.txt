@@ -1,9 +1,7 @@
-fastapi
-uvicorn
-supabase
-python-dotenv
-google-generativeai
-psycopg2-binary
-pydantic
-psutil
-playwright
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+supabase==2.10.0
+python-dotenv==1.0.1
+google-generativeai==0.8.3
+psycopg2-binary==2.9.10
+pydantic==2.10.3
